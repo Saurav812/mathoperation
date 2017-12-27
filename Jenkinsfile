@@ -36,7 +36,7 @@ pipeline {
               script{
                   try {
                     echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
-                    mvn "install -Dmaven.test.failure.ignore=true"
+                  sh "mvn install -Dmaven.test.failure.ignore=true"
                 } catch (e) {
                     currentBuild.result = 'FAILURE'
                   throw e
