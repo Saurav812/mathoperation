@@ -42,6 +42,7 @@ pipeline {
                 }
 
               }
+            }
 
           }
           stage('JaCoCo Code Coverage') {
@@ -64,6 +65,6 @@ pipeline {
                       }
                     }
 
-}
+
 }
 }
