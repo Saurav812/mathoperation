@@ -54,7 +54,7 @@ pipeline {
                 }
               //  )
 
-            post {
+            /*post {
                 always {
                         //junit 'target/surefire-reports/*.xml'
                         script {
@@ -79,7 +79,7 @@ pipeline {
                                     )
 
                         }
-                  }
+                  }/*
 
           }
           stage('JaCoCo Code Coverage') {
