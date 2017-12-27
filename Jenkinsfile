@@ -17,7 +17,6 @@ pipeline {
                     dir ('test') {
                         sh 'mvn -B -DskipTests clean package'
                     }
-
                 } catch (e) {
                     // if any exception occurs, mark the build as failed
                     currentBuild.result = 'FAILURE'
@@ -37,7 +36,7 @@ pipeline {
               script{
                   try {
                     echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
-                    sh 'mvn test'
+                    mvn "install -Dmaven.test.failure.ignore=true"
                 } catch (e) {
                     currentBuild.result = 'FAILURE'
                   throw e
@@ -64,10 +63,10 @@ pipeline {
                               step([$class: 'XUnitBuilder', thresholds: [[$class: 'FailedThreshold',
                               unstableThreshold: '1']],tools: [[$class: 'JUnitType', pattern: '/target/surefire-reports/**']]])
                             } catch (e) {
-                                currentBuild.result = 'SUCCESS'
+                                currentBuild.result = 'FAILED'
                               throw e
                             } finally {
-                              emailext attachLog: true, body: 'Unit Test has passed ', subject: 'SUCCESS', to: 'sprasad.tech812@gmail.com'
+                              emailext attachLog: true, body: 'Unit Test has failed ', subject: 'FAILED', to: 'sprasad.tech812@gmail.com'
                             }
                         }
                         publishHTML([
@@ -83,8 +82,27 @@ pipeline {
                   }
 
           }
+          stage('JaCoCo Code Coverage') {
+              steps {
+                  script {
+                    try {
+                          //sh "${mvnHome}/bin/mvn -B -f ./product-api -Dspring.profiles.active=integration -Dmaven.test.failure.ignore=true prepare-package"
+                          jacoco(classPattern: './product-api/target/**/classes', execPattern: './product-api/target/jacoco.exec', sourcePattern: './product-api/src/main/java')
+                          // TODO_1st : if code coverage  is below threshold stop build & fail , is there a way show these numbers on UI  or record and send at end of email
 
-          stage('Deploy to Tomcat') {
+                    } catch e {
+                          currentBuild.result = 'FAILED'
+                      throw e
+                    } finally {
+                          // Email triggered if the build is failed
+                          emailext attachLog: true, body: 'Unit Test has failed ', subject: 'FAILED', to: 'sprasad.tech812@gmail.com'
+                              }
+
+                          }
+
+                      }
+                    }
+        /*  stage('Deploy to Tomcat') {
                 steps {
                   script {
                         echo "Details of the ${env.tomcat_hostname}"
@@ -97,6 +115,6 @@ pipeline {
                   //}
                                                    }
                       }
-                                    }
+                                    }*/
 }
 }
