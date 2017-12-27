@@ -89,8 +89,7 @@ pipeline {
                           //sh "${mvnHome}/bin/mvn -B -f ./product-api -Dspring.profiles.active=integration -Dmaven.test.failure.ignore=true prepare-package"
                           jacoco(classPattern: './product-api/target/**/classes', execPattern: './product-api/target/jacoco.exec', sourcePattern: './product-api/src/main/java')
                           // TODO_1st : if code coverage  is below threshold stop build & fail , is there a way show these numbers on UI  or record and send at end of email
-
-                    } catch e {
+                    } catch (e) {
                           currentBuild.result = 'FAILED'
                       throw e
                     } finally {
