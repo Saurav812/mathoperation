@@ -66,8 +66,8 @@ pipeline {
                       publishHTML([
                         allowMissing: true,
                         alwaysLinkToLastBuild: true,
-                        keepAll: true, reportDir: 'reports/',
-                        reportFiles: '*.xml',
+                        keepAll: true, reportDir: 'target/site/**',
+                        reportFiles: '*.html',
                         reportName: 'Coverage Report',
                         reportTitles: '']
                                   )
