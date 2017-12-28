@@ -46,6 +46,12 @@ pipeline {
 
           }
 
+        stage('Report') {
+          steps {
+            mvn surefire-report:report
+          }
+        }
+
 
           stage('JaCoCo Code Coverage') {
               steps {
