@@ -34,7 +34,7 @@ pipeline {
               script{
                   try {
                     echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
-                  sh "mvn install -Dmaven.test.failure.ignore=true"
+                    sh "mvn install -Dmaven.test.failure.ignore=true"
                 } catch (e) {
                     currentBuild.result = 'FAILURE'
                   throw e
@@ -42,33 +42,7 @@ pipeline {
 
               }
             }
-            post {
-                always {
-                        //junit 'target/surefire-reports/*.xml'
-                        script {
-                            try {
-                              junit 'target/surefire-reports/*.xml'
-                              step([$class: 'JUnitResultArchiver', testResults: 'target/surefire-reports/*.xml'])
-                              step([$class: 'XUnitBuilder', thresholds: [[$class: 'FailedThreshold',
-                              unstableThreshold: '1']],tools: [[$class: 'JUnitType', pattern: '/target/surefire-reports/**']]])
-                            } catch (e) {
-                                currentBuild.result = 'SUCCESS'
-                              throw e
-                            } finally {
-                              emailext attachLog: true, body: 'Unit Test has passed ', subject: 'SUCCESS', to: 'sprasad.tech812@gmail.com'
-                            }
-                        }
-                        publishHTML([
-                          allowMissing: true,
-                          alwaysLinkToLastBuild: true,
-                          keepAll: true, reportDir: 'reports/',
-                          reportFiles: '*.xml',
-                          reportName: 'Coverage Report',
-                          reportTitles: '']
-                                    )
 
-                        }
-                  }
 
           }
 
