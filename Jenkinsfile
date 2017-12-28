@@ -50,6 +50,31 @@ pipeline {
           steps {
             sh "mvn surefire-report:report"
           }
+          post {
+              always {
+                      //junit 'target/surefire-reports/*.xml'
+                      script {
+                          try {
+                            step([$class: 'XUnitBuilder', thresholds: [[$class: 'FailedThreshold',
+                            unstableThreshold: '1']],tools: [[$class: 'JUnitType', pattern: 'target/surefire-reports/**']]])
+                          } catch (e) {
+                              currentBuild.result = 'FAILED'
+                            throw e
+                          } finally {
+                            emailext attachLog: true, body: 'Unit Test has FAILED ', subject: 'FAILED', to: 'abc@xyz.com'
+                          }
+                      }
+                      publishHTML([
+                        allowMissing: true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true, reportDir: 'reports/',
+                        reportFiles: '*.xml',
+                        reportName: 'Coverage Report',
+                        reportTitles: '']
+                                  )
+
+                      }
+                }
         }
 
 
