@@ -52,11 +52,10 @@ pipeline {
           }
           post {
               always {
-                      //junit 'target/surefire-reports/*.xml'
-                      script {
+                  script {
                           try {
                             step([$class: 'XUnitBuilder', thresholds: [[$class: 'FailedThreshold',
-                            unstableThreshold: '1']],tools: [[$class: 'JUnitType', pattern: 'target/surefire-reports/**']]])
+                            unstableThreshold: '1']],tools: [[$class: 'JUnitType', pattern: 'target/site/**']]])
                           } catch (e) {
                               currentBuild.result = 'FAILED'
                             throw e
